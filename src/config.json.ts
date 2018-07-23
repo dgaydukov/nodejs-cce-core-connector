@@ -1,0 +1,7 @@
+
+
+export default {
+    MONGODB_CONNECTION: process.env.MONGODB_CONNECTION,
+    KAFKA_CONNECTION: process.env.KAFKA_CONNECTION,
+    KAFKA_TOPIC_LIST: process.env.KAFKA_TOPIC_LIST
+}

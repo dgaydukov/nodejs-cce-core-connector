@@ -1,0 +1,9 @@
+.idea
+.dockerignore
+Dockerfile
+package-lock.json
+supervisord.conf
+Docker_entrypoint.sh
+npm-debug.log
+node_modules
+dist

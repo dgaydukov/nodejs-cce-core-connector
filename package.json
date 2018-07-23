@@ -1,0 +1,45 @@
+{
+  "name": "CryptoConnector",
+  "version": "1.0.0",
+  "description": "crypto connector proxy to pass request from socket to kafka",
+  "main": "app/server.js",
+  "scripts": {
+    "start": "npm-run-all clean build --parallel watch pm2 ",
+    "clean": "mkdir -p dist && rm -rf dist/*",
+    "pm2": "pm2 startOrReload dev.ecosystem.json",
+    "log": "pm2 logs --timestamp",
+    "build": "./node_modules/typescript/bin/tsc",
+    "watch": "./node_modules/typescript/bin/tsc --watch",
+    "client": "DEBUG='client' DEBUG_DEPTH=6 node dist/testClient.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "_moduleAliases": {
+    "@root": "dist",
+    "@db": "dist/db",
+    "@logic": "dist/logic"
+  },
+  "dependencies": {
+    "express": "^4.16.3",
+    "kafka-node": "^2.6.1",
+    "mongodb": "^3.1.1",
+    "mongoose": "^5.1.1",
+    "sha256": "^0.2.0",
+    "socket.io": "^2.1.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.11.1",
+    "@types/kafka-node": "^2.0.6",
+    "@types/mongodb": "^3.1.1",
+    "@types/mongoose": "^5.0.13",
+    "@types/node": "^10.0.8",
+    "@types/request": "^2.47.0",
+    "@types/socket.io": "^1.4.36",
+    "module-alias": "^2.1.0",
+    "npm-run-all": "^4.1.3",
+    "async": "^2.6.1",
+    "debug": "^3.1.0",
+    "typescript": "^2.3.3",
+    "typings": "^2.1.1"
+  }
+}
