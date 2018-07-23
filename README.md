@@ -1,14 +1,22 @@
 # Node.js CCE (Crypto Currency Exchange) Core Connector
 
-## Project Description
+## Content
+* [Project Description](#Project-Description)
+* [Project Structure](#Project-Structure)
+* [Built With](#Built-With)
+* [Installation](#Installation)
+* [System Testing](#System-Testing)
+* [Module loading](#Module-loading)
+
+### Project Description
 Core Connector is a proxy server that communicates request from socket.io to kafka. Since all internal services of CCE communicate through the 
 kafka we need a more regular way (like socket or REST) to communicate with outside world. So we need a proxy that listen for socket connections
 and proxy all in and out request to kafka.
 
 ### Project Structure
 ```
-dist - compiled typescript from src to javascript
-src - source code folder
+dist - javascript folder with compiled typescript from src folder
+src - source code folder (typescript)
 -logic - project bisyness logic
 -db - database folder (interfaces & models)
 ```
@@ -17,11 +25,12 @@ src - source code folder
 
 * [Kafka](https://kafka.apache.org/quickstart) - how to install & run kafka
 * [KafkaJs](https://www.npmjs.com/package/kafka-node) - node.js module for kafka
-* [MongoDb](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu) - database system
+* [MongoDb](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu) - how to install & run mongo
 * [Mongoose](https://www.npmjs.com/package/mongoose) - node.js module for mongoDb
 * [SocketIo](https://www.npmjs.com/package/socket.io) - node.js socket library
 
-## Installing 
+
+### Installation 
 ```shell
 #run mongod
 sudo service mongod start
@@ -38,7 +47,7 @@ bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 -
 
 #clone & run project
 git clone https://github.com/dgaydukov/nodejs-cce-core-connector.git
-cd connector
+cd nodejs-cce-core-connector
 npm i
 npm start
 # $pid - process id in pm2
@@ -48,6 +57,17 @@ npm start $pid --timestamp
 
 
 ### System Testing
+
+##### Auto Testing
+
+You can run auto tests with `npm test`
+For testing purpose we use the following arhitecture
+testing framework + assertion module + test doubles + code coverage
+* [Mocha](https://mochajs.org) - testing framework
+* [Chai](http://www.chaijs.com) - assertion module
+* [Sinon](http://sinonjs.org) - test doubles
+* [Mocha](https://github.com/gotwarlost/istanbul) - code coverage
+
 
 ##### Socket
 
