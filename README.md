@@ -1,12 +1,14 @@
 # Node.js CCE (Crypto Currency Exchange) Core Connector
 
 ## Content
-* [Project Description](#Project-Description)
-* [Project Structure](#Project-Structure)
-* [Built With](#Built-With)
-* [Installation](#Installation)
-* [System Testing](#System-Testing)
-* [Module loading](#Module-loading)
+* [Project Description](#project-description)
+* [Project Structure](#project-structure)
+* [Built With](#built-with)
+* [Installation](#installation)
+* [Auto Testing](#auto-testing)
+* [Socket](#socket)
+* [Kafka](#kafka)
+* [Module loading](#module-loading)
 
 ### Project Description
 Core Connector is a proxy server that communicates request from socket.io to kafka. Since all internal services of CCE communicate through the 
@@ -56,9 +58,9 @@ npm start $pid --timestamp
 
 
 
-### System Testing
 
-##### Auto Testing
+
+### Auto Testing
 
 You can run auto tests with `npm test`
 For testing purpose we use the following arhitecture
@@ -69,7 +71,8 @@ testing framework + assertion module + test doubles + code coverage
 * [Mocha](https://github.com/gotwarlost/istanbul) - code coverage
 
 
-##### Socket
+
+### Socket
 
 For socket testing there is a file src/testClient.ts. You can run it with `npm run client`
 
@@ -85,7 +88,8 @@ on reconnect we will send all of them.
 
 
 
-##### Kafka
+
+### Kafka
 
 Kafka message request for creating new bitcoin address
 ```json
