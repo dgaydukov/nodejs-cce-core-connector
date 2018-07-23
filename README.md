@@ -25,12 +25,11 @@ src - source code folder (typescript)
 ```
 
 ### Built With
-
-* [Kafka](https://kafka.apache.org/quickstart){:target="_blank"} - how to install & run kafka
-* [KafkaJs](https://www.npmjs.com/package/kafka-node) - node.js module for kafka
-* [MongoDb](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu) - how to install & run mongo
+* [Kafka](https://kafka.apache.org/quickstart) - how to install & run kafka
+* [Kafka-node](https://www.npmjs.com/package/kafka-node) - node.js module for kafka
+* [MongoDB](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu) - how to install & run mongo
 * [Mongoose](https://www.npmjs.com/package/mongoose) - node.js module for mongoDb
-* [SocketIo](https://www.npmjs.com/package/socket.io) - node.js socket library
+* [Socket.IO](https://www.npmjs.com/package/socket.io) - node.js socket library
 
 
 ### Installation 
@@ -69,7 +68,7 @@ testing framework + assertion module + test doubles + code coverage
 * [Mocha](https://mochajs.org) - testing framework
 * [Chai](http://www.chaijs.com) - assertion module
 * [Sinon](http://sinonjs.org) - test doubles
-* [Mocha](https://github.com/gotwarlost/istanbul) - code coverage
+* [Istanbul](https://github.com/gotwarlost/istanbul) - JS code coverage tool
 
 
 
