@@ -9,6 +9,7 @@
 * [Socket](#socket)
 * [Kafka](#kafka)
 * [Module loading](#module-loading)
+* [Authors](#authors)
 
 ### Project Description
 Core Connector is a proxy server that communicates request from socket.io to kafka. Since all internal services of CCE communicate through the 
@@ -25,7 +26,7 @@ src - source code folder (typescript)
 
 ### Built With
 
-* [Kafka](https://kafka.apache.org/quickstart) - how to install & run kafka
+* [Kafka](https://kafka.apache.org/quickstart){:target="_blank"} - how to install & run kafka
 * [KafkaJs](https://www.npmjs.com/package/kafka-node) - node.js module for kafka
 * [MongoDb](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu) - how to install & run mongo
 * [Mongoose](https://www.npmjs.com/package/mongoose) - node.js module for mongoDb
@@ -149,6 +150,10 @@ typescript functions. For this purpose we write in typescript config ts.config.j
 }
 ```
 
+
+## Authors
+
+* **Gaydukov Dmitiry** - *Take a look* - [How to become a Senior Javascript Developer](https://github.com/dgaydukov/how-to-become-a-senior-js-developer)
 
 
 

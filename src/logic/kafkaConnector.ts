@@ -17,9 +17,11 @@ interface iMessage{
 
 export class KafkaConnector{
     client: kafka.Client;
+    socket;
 
-    constructor(){
+    constructor(socket = null){
         this.client = new kafka.KafkaClient({kafkaHost: config.KAFKA_CONNECTION})
+        this.socket = socket
     }
 
     send(topic: string, message: Object, cb = null){
@@ -39,7 +41,7 @@ export class KafkaConnector{
         })
     }
 
-    listen(socket){
+    listen(){
         /**
          * for testing purpose you can clear message table
          * KafkaMessage.collection.drop()
@@ -83,7 +85,7 @@ export class KafkaConnector{
                     }
                 })
                 try{
-                    socket.send(message.value)
+                    this.socket.send(message.value)
                 }
                 catch(e){
                     debug(`kafka input message error: ${e.message}`)
