@@ -33,11 +33,12 @@ export class KafkaConnector{
         producer.send(payloads,  (err, data)=>{
             const messageId = data[topic][0]
             debug(`sent to kafka, topic: ${topic}, messageId: ${messageId}, initial message: `, message)
-            km.save((err, data)=>{
-            })
-            if(cb){
-                cb(messageId)
-            }
+            km.save()
+                .then(data=>{
+                    if(cb){
+                        cb(messageId)
+                    }
+                })
         })
     }
 
@@ -46,51 +47,50 @@ export class KafkaConnector{
          * for testing purpose you can clear message table
          * KafkaMessage.collection.drop()
          */
-        KafkaMessage.find({type: KM_TYPE.INPUT}, (err, data)=>{
-            const hashList = {}
-            data.map(item=>{
-                hashList[item.hash] = 1
-            })
-            listener(hashList)
-        })
-
-        const listener = (hashList)=>{
-            const topicList = []
-            const list = JSON.parse(config.KAFKA_TOPIC_LIST)
-            Object.keys(list).map(key=>{
-                topicList.push({
-                    topic: list[key].listen,
-                    partition: 0,
+        KafkaMessage.find({type: KM_TYPE.INPUT})
+            .then(data=>{
+                const hashList = {}
+                data.map(item=>{
+                    hashList[item.hash] = 1
                 })
+                return hashList
             })
+            .then(hashList=>{
+                const topicList = []
+                const configTopicList = JSON.parse(config.KAFKA_TOPIC_LIST)
+                Object.keys(configTopicList).map(key=>{
+                    topicList.push({
+                        topic: configTopicList[key].listen,
+                        partition: 0,
+                    })
+                })
 
-            const consumer = new kafka.Consumer(
-                this.client,
-                topicList,
-                {
-                    autoCommit: false,
-                    fromOffset: true,
-                }
-            )
-            consumer.on('message', (message: iMessage)=>{
-                const hash = sha256(message.topic+message.value+message.offset)
-                if(hashList[hash]){
-                    return
-                }
-                debug(`------------new kafka message------------`, JSON.stringify(message))
-                const km = new KafkaMessage(Object.assign({}, message, {type: KM_TYPE.INPUT, processed: 1, hash: hash}))
-                km.save((err, data)=>{
-                    if(err){
-                        debug(`save KafkaMessage error: ${err}`)
+                const consumer = new kafka.Consumer(
+                    this.client,
+                    topicList,
+                    {
+                        autoCommit: false,
+                        fromOffset: true,
                     }
-                })
-                try{
-                    this.socket.send(message.value)
-                }
-                catch(e){
-                    debug(`kafka input message error: ${e.message}`)
-                }
-            });
-        }
+                )
+                consumer.on('message', (message: iMessage)=>{
+                    const hash = sha256(message.topic+message.value+message.offset)
+                    if(hashList[hash]){
+                        return
+                    }
+                    debug(`------------new kafka message------------`, JSON.stringify(message))
+                    const km = new KafkaMessage(Object.assign({}, message, {type: KM_TYPE.INPUT, processed: 1, hash: hash}))
+                    km.save()
+                    try{
+                        this.socket.send(message.value)
+                    }
+                    catch(e){
+                        debug(`kafka input message error: ${e.message}`)
+                    }
+                });
+            })
+            .catch(ex=>{
+                debug(`Error on KafkaConnector.listen: ${ex}`)
+            })
     }
 }
