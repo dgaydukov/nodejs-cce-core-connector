@@ -49,7 +49,7 @@ const btc_address_info = {
 const eth_address_info = {
     "data": {
         "currency": "eth",
-        "address": "0x40db6ac6887c3b95008d826bc046ed15d09d8299",
+        "address": "0x735A977081464171e10CAA48b43039c56c86efAA",
     },
     "metadata": {
         "guid": GUID,
@@ -75,7 +75,7 @@ const btc_tx_info = {
 const eth_tx_info = {
     "data": {
         "currency": "eth",
-        "txId": "c7d45dacf74113e099d4a6d8272f72c6d829c1fe873fe9757f737c448039dec7",
+        "txId": "0xc8ea8e1ed9e8f55c56c7eabb421853aa3fc963eb845134e46d2117ed3c83c1d6",
     },
     "metadata": {
         "guid": GUID,
@@ -102,9 +102,9 @@ const btc_transaction = {
 const eth_transaction = {
     "data": {
         "currency": "eth",
-        "from": "0x40db6ac6887c3b95008d826bc046ed15d09d8299",
-        "to": "0x94f4fd6219851cce017874009b9f80ad8df4a7fd",
-        "amount": "0.01"
+        "from": "0x735A977081464171e10CAA48b43039c56c86efAA",
+        "to": "0x3740642a96f3833bf15983950dc0d2f9a261137c",
+        "amount": "0.001"
     },
     "metadata": {
         "guid": GUID,
@@ -118,10 +118,10 @@ const eth_transaction = {
 
 socket.on('connect', () => {
     socket.on(CHAT_NAME, (data) => {
-        debug(+new Date(), data)
+        debug(+new Date(), JSON.stringify(data, null, 6))
     });
 
     setTimeout(()=>{
-        socket.emit(CHAT_NAME, btc_address_info)
+        socket.emit(CHAT_NAME, eth_address_info)
     }, 1*1000)
 });
