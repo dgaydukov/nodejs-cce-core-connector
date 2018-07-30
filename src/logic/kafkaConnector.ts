@@ -24,21 +24,24 @@ export class KafkaConnector{
         this.socket = socket
     }
 
-    send(topic: string, message: Object, cb = null){
-        const km = new KafkaMessage(Object.assign({}, message, {type: KM_TYPE.OUTPUT, processed: 1}))
-        const producer = new kafka.Producer(this.client);
-        const payloads = [
-            { topic: topic, messages: [JSON.stringify(message)]},
-        ]
-        producer.send(payloads,  (err, data)=>{
-            const messageId = data[topic][0]
-            debug(`sent to kafka, topic: ${topic}, messageId: ${messageId}, initial message: `, message)
-            km.save()
-                .then(data=>{
-                    if(cb){
-                        cb(messageId)
-                    }
-                })
+    send(topic: string, message: Object){
+        return new Promise((resolve, reject)=>{
+            const km = new KafkaMessage(Object.assign({}, message, {type: KM_TYPE.OUTPUT, processed: 1}))
+            const producer = new kafka.Producer(this.client);
+            const payloads = [
+                { topic: topic, messages: [JSON.stringify(message)]},
+            ]
+            producer.send(payloads,  (err, data)=>{
+                if(err){
+                    return reject(err)
+                }
+                const messageId = data[topic][0]
+                debug(`sent to kafka, topic: ${topic}, messageId: ${messageId}, initial message: `, message)
+                km.save()
+                    .then(data=>{
+                        resolve(messageId)
+                    })
+            })
         })
     }
 

@@ -49,7 +49,7 @@ const btc_address_info = {
 const eth_address_info = {
     "data": {
         "currency": "eth",
-        "address": "0x735A977081464171e10CAA48b43039c56c86efAA",
+        "address": "0x22e0c42E265476bD64A018C45eBBa7F5c1D2d432",
     },
     "metadata": {
         "guid": GUID,
@@ -75,7 +75,7 @@ const btc_tx_info = {
 const eth_tx_info = {
     "data": {
         "currency": "eth",
-        "txId": "0xc8ea8e1ed9e8f55c56c7eabb421853aa3fc963eb845134e46d2117ed3c83c1d6",
+        "txId": "0xc8ea8e1ed9e8f55c56c7eabb421853aa3fc963eb845134e46d2117ed3c83c1d61",
     },
     "metadata": {
         "guid": GUID,
@@ -102,7 +102,7 @@ const btc_transaction = {
 const eth_transaction = {
     "data": {
         "currency": "eth",
-        "from": "0x735A977081464171e10CAA48b43039c56c86efAA",
+        "from": "0xc709DaF7A27406CE6EB1F5a273De5ccE4583f154",
         "to": "0x3740642a96f3833bf15983950dc0d2f9a261137c",
         "amount": "0.001"
     },
