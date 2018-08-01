@@ -38,79 +38,64 @@ export class SocketConnector{
             debug("user disconnected", message)
         }
         sm.save()
-            .then(data=>{
-            })
-            .catch(ex=>{
-                debug(`Error on SocketMessage save: ${ex}`)
-            })
     }
 
-    private sendUnprocessedMessages(appId){
-        SocketMessage.find({appId: appId, type: SM_TYPE.OUTPUT, processed: 0})
-            .then(data=>{
-                data.map((item, i)=>{
-                    setTimeout(()=>{
-                        this.send(item.value, item)
-                    }, i * 100)
-                })
-            })
-            .catch(ex=>{
-                debug(`Error on SocketMessage find UnprocessedMessages: ${ex}`)
-            })
+    private async sendUnprocessedMessages(appId){
+        const dbSmList = await SocketMessage.find({appId: appId, type: SM_TYPE.OUTPUT, processed: 0})
+        for(const item of dbSmList){
+            this.send(item.value, item)
+        }
     }
 
-    listen(){
-        SocketMessage.find({type: SM_TYPE.INPUT})
-            .then(data=>{
-                const hashList = {};
-                data.map(item=>{
-                    hashList[item.hash] = 1
-                })
-                return hashList
+    async listen(){
+        const kc = new KafkaConnector()
+        const dbSmList = await SocketMessage.find({type: SM_TYPE.INPUT})
+        const hashList = {};
+        dbSmList.map(item=>{
+            hashList[item.hash] = 1
+        })
+        const topicList = JSON.parse(config.KAFKA_TOPIC_LIST)
+        this.io.use((socket, next) => {
+            const appId = socket.handshake.query.appId
+            const socketId = socket.id
+            if (appId) {
+                userList[appId] = socketId
+                this.sendUnprocessedMessages(appId)
+                return next();
+            }
+            next(new Error('Authentication Failed'));
+        });
+        this.io.on('connection', (client)=>{
+            const socketId = client.id
+            debug(`user connected ${socketId}`)
+            client.on('disconnect', ()=>{
+                debug(`user disconnected ${socketId}`)
             })
-            .then(hashList=>{
-                const topicList = JSON.parse(config.KAFKA_TOPIC_LIST)
-                const kc = new KafkaConnector()
-                this.io.use((socket, next) => {
-                    const appId = socket.handshake.query.appId
-                    const socketId = socket.id
-                    if (appId) {
-                        userList[appId] = socketId
-                        this.sendUnprocessedMessages(appId)
-                        return next();
+            client.on(CHAT_NAME, message=>{
+                try{
+                    const hash = sha256(JSON.stringify(message))
+                    if(hashList[hash]){
+                        return
                     }
-                    next(new Error('Authentication error'));
-                });
-                this.io.on('connection', (client)=>{
-                    const socketId = client.id
-                    debug(`user connected ${socketId}`)
-                    client.on('disconnect', ()=>{
-                        debug(`user disconnected ${socketId}`)
+                    debug("--------------new socket message--------------", message)
+                    const appId = message.metadata.appId
+                    const sm = new SocketMessage({
+                        name: CHAT_NAME,
+                        value: JSON.stringify(message),
+                        hash: hash,
+                        appId: appId,
+                        type: SM_TYPE.INPUT,
+                        processed: 1,
                     })
-                    client.on(CHAT_NAME, message=>{
-                        const hash = sha256(JSON.stringify(message))
-                        if(hashList[hash]){
-                            return
-                        }
-                        debug("--------------new socket message--------------", message)
-                        const appId = message.metadata.appId
-                        const sm = new SocketMessage({
-                            name: CHAT_NAME,
-                            value: JSON.stringify(message),
-                            hash: hash,
-                            appId: appId,
-                            type: SM_TYPE.INPUT,
-                            processed: 1,
-                        })
-                        sm.save()
-                        userList[appId] = socketId
-                        const topic = topicList[message.data.currency].send
-                        kc.send(topic, message);
-                    })
-                });
+                    sm.save()
+                    userList[appId] = socketId
+                    const topic = topicList[message.data.currency].send
+                    kc.send(topic, message);
+                }
+                catch(ex){
+                    debug(`Error SocketConnector.listen: ${ex}`)
+                }
             })
-            .catch(ex=>{
-                debug(`Error on SocketConnector.listen: ${ex}`)
-            })
+        });
     }
 }

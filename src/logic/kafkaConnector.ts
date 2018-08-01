@@ -38,62 +38,51 @@ export class KafkaConnector{
                 const messageId = data[topic][0]
                 debug(`sent to kafka, topic: ${topic}, messageId: ${messageId}, initial message: `, message)
                 km.save()
-                    .then(data=>{
-                        resolve(messageId)
-                    })
+                resolve(messageId)
             })
         })
     }
 
-    listen(){
+    async listen(){
         /**
          * for testing purpose you can clear message table
          * KafkaMessage.collection.drop()
          */
-        KafkaMessage.find({type: KM_TYPE.INPUT})
-            .then(data=>{
-                const hashList = {}
-                data.map(item=>{
-                    hashList[item.hash] = 1
-                })
-                return hashList
+        const dbKmList = await KafkaMessage.find({type: KM_TYPE.INPUT})
+        const hashList = {}
+        dbKmList.map(item=>{
+            hashList[item.hash] = 1
+        })
+        const topicList = []
+        const configTopicList = JSON.parse(config.KAFKA_TOPIC_LIST)
+        Object.keys(configTopicList).map(key=>{
+            topicList.push({
+                topic: configTopicList[key].listen,
+                partition: 0,
             })
-            .then(hashList=>{
-                const topicList = []
-                const configTopicList = JSON.parse(config.KAFKA_TOPIC_LIST)
-                Object.keys(configTopicList).map(key=>{
-                    topicList.push({
-                        topic: configTopicList[key].listen,
-                        partition: 0,
-                    })
-                })
-
-                const consumer = new kafka.Consumer(
-                    this.client,
-                    topicList,
-                    {
-                        autoCommit: false,
-                        fromOffset: true,
-                    }
-                )
-                consumer.on('message', (message: iMessage)=>{
-                    const hash = sha256(message.topic+message.value+message.offset)
-                    if(hashList[hash]){
-                        return
-                    }
-                    debug(`------------new kafka message------------`, JSON.stringify(message))
-                    const km = new KafkaMessage(Object.assign({}, message, {type: KM_TYPE.INPUT, processed: 1, hash: hash}))
-                    km.save()
-                    try{
-                        this.socket.send(message.value)
-                    }
-                    catch(e){
-                        debug(`kafka input message error: ${e.message}`)
-                    }
-                });
-            })
-            .catch(ex=>{
-                debug(`Error on KafkaConnector.listen: ${ex}`)
-            })
+        })
+        const consumer = new kafka.Consumer(
+            this.client,
+            topicList,
+            {
+                autoCommit: false,
+                fromOffset: true,
+            }
+        )
+        consumer.on('message', (message: iMessage)=>{
+            try{
+                const hash = sha256(message.topic + message.value + message.offset)
+                if(hashList[hash]){
+                    return
+                }
+                debug(`------------new kafka message------------`, JSON.stringify(message))
+                const km = new KafkaMessage(Object.assign({}, message, {type: KM_TYPE.INPUT, processed: 1, hash: hash}))
+                km.save()
+                this.socket.send(message.value)
+            }
+            catch(ex){
+                debug(`Error KafkaConnector.listen: ${ex}`)
+            }
+        })
     }
 }
