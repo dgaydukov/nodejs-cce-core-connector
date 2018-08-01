@@ -122,6 +122,6 @@ socket.on('connect', () => {
     });
 
     setTimeout(()=>{
-        socket.emit(CHAT_NAME, eth_address_info)
+        socket.emit(CHAT_NAME, btc_new_address)
     }, 1*1000)
 });

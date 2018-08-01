@@ -8,6 +8,7 @@
     "ENV": "dev",
     "PORT": 3335,
     "DEBUG": "kafka, socket",
+    "DEFAULT_APP_ID": "7132d44d-e8a6-443e-8ddd-a8285fd01112",
     "DEBUG_COLORS": true,
     "DEBUG_DEPTH": 6,
     "MONGODB_CONNECTION": "mongodb://localhost:27017/connector",

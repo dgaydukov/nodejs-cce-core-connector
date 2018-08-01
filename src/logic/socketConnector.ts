@@ -19,7 +19,7 @@ export class SocketConnector{
 
     send(msg: string, sm = null){
         const message = JSON.parse(msg)
-        const appId = message.metadata.appId
+        const appId = message.metadata.appId || process.env.DEFAULT_APP_ID
         if(!sm){
             sm = new SocketMessage({
                 name: CHAT_NAME,
