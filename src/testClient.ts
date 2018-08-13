@@ -36,7 +36,7 @@ const eth_new_address = {
 const btc_address_info = {
     "data": {
         "currency": "btc",
-        "address": "2N3AAagLvicDekStqY5mWAqQdrWsBvrAxNY",
+        "address": "2N6H8snYty4HmHqfjUgLKNh4co5YthgkVTZ",
     },
     "metadata": {
         "guid": GUID,
@@ -88,8 +88,8 @@ const eth_tx_info = {
 const btc_transaction = {
     "data": {
         "currency": "btc",
-        "to": "2N1BcnHjh8hHDMLNtC6MjZKttS1gXy7eVgm",
-        "amount": "0.01"
+        "to": "2N6QLJwsZ6JkznrX1BGPBKC3mp7kko1sPDa",
+        "amount": "0.001"
     },
     "metadata": {
         "guid": GUID,
@@ -122,6 +122,6 @@ socket.on('connect', () => {
     });
 
     setTimeout(()=>{
-        socket.emit(CHAT_NAME, btc_new_address)
+        socket.emit(CHAT_NAME, eth_new_address)
     }, 1*1000)
 });

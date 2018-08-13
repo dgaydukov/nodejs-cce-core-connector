@@ -2,7 +2,7 @@
   "name": "CryptoConnector",
   "version": "1.0.0",
   "description": "crypto connector proxy to pass request from socket to kafka",
-  "main": "app/server.js",
+  "main": "dist/index.js",
   "scripts": {
     "start": "npm-run-all clean build --parallel watch pm2 ",
     "clean": "mkdir -p dist && rm -rf dist/*",
